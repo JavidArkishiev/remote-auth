@@ -42,13 +42,9 @@ public class JWTService {
     }
 
     public String extractUsername(String token) {
-        return extractClaim(token, Claims::getSubject);
+        return extractAllClaims(token).getSubject();
     }
 
-    private <T> T extractClaim(String token, Function<Claims, T> claimsResolvers) {
-        final Claims claims = extractAllClaims(token);
-        return claimsResolvers.apply(claims);
-    }
 
     private Claims extractAllClaims(String token) {
         return Jwts
@@ -60,15 +56,9 @@ public class JWTService {
     }
 
     public Long extractUserId(String token) {
-        return Jwts
-                .parserBuilder()
-                .setSigningKey(getSignKey())
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
+        return extractAllClaims(token)
                 .get("userId", Long.class);
     }
-
 
     public boolean isTokenValid(String token, UserDetails userDetails) {
         final String userName = extractUsername(token);
@@ -76,7 +66,7 @@ public class JWTService {
     }
 
     private boolean isTokenExpired(String token) {
-        return extractClaim(token, Claims::getExpiration).before(new Date());
+        return extractAllClaims(token).getExpiration().before(new Date());
     }
 
 }

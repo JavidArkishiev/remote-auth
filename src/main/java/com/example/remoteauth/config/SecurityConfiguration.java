@@ -25,15 +25,15 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableMethodSecurity
 public class SecurityConfiguration {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
-
+    private UserService userService;
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+    private final PasswordEncoder passwordEncoder;
     @Autowired
     public void setUserService(UserService userService) {
         this.userService = userService;
     }
 
-    private UserService userService;
-    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
-    private final PasswordEncoder passwordEncoder;
+
 
 
     @Bean
@@ -62,7 +62,7 @@ public class SecurityConfiguration {
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
-        authenticationProvider.setUserDetailsService(userService.getEmail());
+        authenticationProvider.setUserDetailsService(userService.userDetailsService());
         authenticationProvider.setPasswordEncoder(passwordEncoder);
         return authenticationProvider;
     }

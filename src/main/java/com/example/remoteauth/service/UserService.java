@@ -10,7 +10,7 @@ public interface UserService {
 
     void createUser(UserRequest userRequest) throws EmailExistException;
 
-    UserDetailsService getEmail();
+    UserDetailsService userDetailsService();
 
     AuthResponse generateToken(AuthRequest request);
 }
