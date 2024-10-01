@@ -68,8 +68,13 @@ public class UserServiceImpl implements UserService {
 
         var user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new UserNotFoundException("Email or password incorrect");
+        }
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(),
                 request.getPassword()));
+
 
         var accessToken = jwtService.generateToken(user);
         return AuthResponse.builder()
